@@ -1,21 +1,28 @@
 (ns bowling-kata.core)
 
-(defn spare? [[first-throw second-throw]]
-  (if (= 10 (+ first-throw second-throw))
-    true
-    false))
+(defn spare? [rolls]
+  (= 10 (apply + (take 2 rolls))))
 
-(defn frame-bonus [frame next-frame]
+(defn strike? [rolls]
+  (= 10 (first rolls)))
+
+(defn number-of-next-rolls [rolls]
   (cond
-    (spare? frame) (first next-frame) 
-    :else 0))
+      (or (spare? rolls) (strike? rolls)) 3 
+      :else 2))
 
-(defn calculate-bonus [frames]
-  (loop [frame-index 1 total-bonus 0]
-    (let [frame (get frames frame-index)]
-      (if (= frame-index 10) 
-      total-bonus
-      (recur (inc frame-index) (+ total-bonus (frame-bonus frame (get frames (inc frame-index)))))))))
+(defn number-of-rolls-for-frame [rolls]
+  (if (strike? rolls) 1 2))
 
-(defn score-game [frames]
-  (+ (apply + (flatten (vals frames))) (calculate-bonus frames)))
+(defn convert-to-frames [rolls]
+  (lazy-seq (cons (take (number-of-next-rolls rolls) rolls)
+                        (convert-to-frames (drop (number-of-rolls-for-frame rolls) rolls)))))
+
+(defn make-game[rolls]
+  (take 10 (convert-to-frames rolls)))
+
+(defn calculate-game-score [frame_scores]
+  (reduce + frame_scores))
+
+(defn score-game [rolls]
+  (calculate-game-score (map calculate-game-score (make-game rolls))))
