@@ -25,4 +25,4 @@
   (reduce + frame_scores))
 
 (defn score-game [rolls]
-  (calculate-game-score (map calculate-game-score (make-game rolls))))
+  (reduce + (map calculate-game-score (make-game rolls))))

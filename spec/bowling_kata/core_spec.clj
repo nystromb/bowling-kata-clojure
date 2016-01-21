@@ -13,7 +13,7 @@
     (should= 16 (score-game (concat '(5 5 3) (repeat 17 0)))))
 
   (it "adds extra bonus for strikes"
-     (should= 26 (score-game (concat '(10) '(5 3) (repeat 17 0)))))
+     (should= 26 (score-game (concat '(10 5 3) (repeat 17 0)))))
 
   (it "scores a perfect game"
     (should= 300 (score-game (concat (repeat 12 10))))))
